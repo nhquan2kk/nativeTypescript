@@ -6,13 +6,38 @@ import CheckBox from '@react-native-community/checkbox';
 
 const LoginScreen = () => {
     const [isCheck, setIsCheck] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [checkEmail, setCheckEmail] = useState(true);
+    const [errorPassword, setErrorPassword] = useState('');
+
+    const onSubmit = () => {
+        let formData = {
+            _email: email,
+            _password: password,
+            _checkBox: isCheck
+        }
+
+        //validate Email & password
+        let regexEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
+        if (!regexEmail.test(formData._email)) {
+            setCheckEmail(false)
+        } else {
+            setCheckEmail(true)
+        }
+
+        formData._password === '' ? setErrorPassword('*Password cannot blank ') : setErrorPassword('')
+
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View>
                 <StatusBar backgroundColor={'#ffffff'} barStyle={'dark-content'}></StatusBar>
             </View>
             <View style={styles.TitleLogin}>
-                <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'black' }}>Đăng nhập</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'black' }}>Login</Text>
                 <Text>By signing in you are agreeing</Text>
                 <View style={{ flexDirection: 'row' }}>
                     <Text>our </Text><TouchableOpacity onPress={() => { Alert.alert(' sau này route sau') }}><Text style={{ color: '#1DA1F2' }}>Term and privacy policy</Text></TouchableOpacity>
@@ -22,13 +47,17 @@ const LoginScreen = () => {
                 <View style={styles.form}>
                     <View style={styles.mail}>
                         <Icons name="email" style={styles.icon} />
-                        <TextInput placeholder="Nhập Email" style={styles.enterMail}></TextInput>
+                        <TextInput placeholder="Nhập Email" style={styles.enterMail} onChangeText={(value) => setEmail(value)}></TextInput>
+                        <Text style={{ color: 'red' }}>{!checkEmail ? '*Email not invalid' : ''}</Text>
                     </View>
                     <View style={styles.mail}>
                         <Icons2 name="password" style={styles.icon} />
-                        <TextInput placeholder="Nhập mật khẩu" style={styles.enterMail}></TextInput>
+                        <TextInput placeholder="Nhập mật khẩu" secureTextEntry={true} style={styles.enterMail} onChangeText={(value) => setPassword(value)}></TextInput>
+                        <Text style={{ color: 'red' }}>{errorPassword}</Text>
                     </View>
                 </View>
+
+
                 <View style={styles.actPw}>
                     <View style={styles.rememberPw}>
                         <CheckBox
@@ -41,7 +70,7 @@ const LoginScreen = () => {
                     </View>
                     <Text style={styles.forgetP} onPress={() => Alert.alert('route quen mat khau')}>Forget password</Text>
                 </View>
-                <Pressable style={styles.btnLogin} onPress={() => Alert.alert('route login')}>
+                <Pressable style={styles.btnLogin} onPress={() => onSubmit()}>
                     <Text style={{ color: 'white' }}>Login</Text>
                 </Pressable>
             </View>
@@ -50,7 +79,7 @@ const LoginScreen = () => {
             </View>
             <View style={styles.loginWith}>
                 <View style={styles.itemLogin} >
-                    <Image style={{ width: '100%', height: 50 }} source={require('../assets/img/facebook.png')} />
+                    <Image style={{ width: '100%', height: 50 }} source={require('../assets/img/facebook.jpg')} />
                 </View>
                 <View style={styles.itemLogin} >
                     <Image style={{ width: '100%', height: 50 }} source={require('../assets/img/instagram.png')} />
@@ -63,9 +92,10 @@ const LoginScreen = () => {
 
             <View style={{ alignItems: 'center' }}>
                 <View style={styles.logoApp}>
-                    <Image style={{ width: '100%', height: 150 }} source={require('../assets/img/logo.jpg')} />
+                    <Image style={{ width: '100%', height: 150, }} source={require('../assets/img/logo.jpg')} />
                 </View>
             </View>
+
 
         </SafeAreaView >
 
@@ -129,7 +159,7 @@ const styles = StyleSheet.create({
     },
     itemLogin: {
         width: '15%',
-        marginLeft: 10
+        marginLeft: 10,
 
     },
     logoApp: {
